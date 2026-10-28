@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinkNest — Social Link Creator</title>
+<style>
+:root{--ink:#172033;--muted:#6c7488;--line:#e6eaf2;--bg:#f5f7fc;--primary:#6558e8;--primary2:#8b5cf6;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0%,#ecebff 0,transparent 30%),radial-gradient(circle at 100% 20%,#e4f5ff 0,transparent 28%),var(--bg);color:var(--ink)}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,56px);background:#ffffffd9;border-bottom:1px solid #e8eaf2;backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:21px;letter-spacing:-.6px}.brandmark{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#a855f7);display:grid;place-items:center;color:white;font-size:20px;box-shadow:0 8px 18px #6558e83b}
+.nav{display:flex;gap:24px;align-items:center;color:#596176;font-size:14px}.nav a{color:inherit;text-decoration:none}.nav a:hover{color:var(--primary)}.nav .signin{background:#f0efff;color:#5447d8;padding:10px 16px;border-radius:12px;font-weight:700}
+.hero{max-width:1180px;margin:42px auto 24px;padding:0 22px}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #dedbff;background:#fff;padding:7px 12px;border-radius:99px;color:#6558e8;font-size:12px;font-weight:800;letter-spacing:.4px}.hero h1{font-size:clamp(30px,4.5vw,48px);line-height:1.08;letter-spacing:-1.8px;margin:18px 0 12px}.gradient{background:linear-gradient(90deg,#6558e8,#a34ee8);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:650px;line-height:1.65;margin:0}
+.layout{max-width:1180px;margin:0 auto 60px;padding:0 22px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:22px;align-items:start}
+.panel{background:#ffffffeb;border:1px solid #e6e9f3;border-radius:22px;box-shadow:0 12px 35px #20264b0a;overflow:hidden}.panelhead{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.panelhead h2{margin:0;font-size:17px}.step{font-size:11px;font-weight:800;color:#6b5ce7;background:#f0efff;padding:7px 10px;border-radius:9px}.panelbody{padding:22px}.sectionlabel{font-size:12px;letter-spacing:.8px;font-weight:850;color:#81889b;margin:0 0 14px;text-transform:uppercase}.field{margin-bottom:17px}.field label{display:block;font-size:13px;font-weight:750;margin-bottom:8px}.field input,.field textarea,.field select{width:100%;border:1px solid #dfe4ef;border-radius:12px;padding:12px 13px;background:#fff;color:var(--ink);outline:none}.field input:focus,.field textarea:focus{border-color:#8b80f0;box-shadow:0 0 0 3px #8175ed1a}.field textarea{resize:vertical;min-height:72px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.uploadrow{display:flex;gap:14px;align-items:center;margin-bottom:20px}.avatar{width:66px;height:66px;border-radius:20px;background:linear-gradient(135deg,#e4ddff,#d9f0ff);display:grid;place-items:center;font-size:26px;color:#6558e8;overflow:hidden;flex-shrink:0}.avatar img{width:100%;height:100%;object-fit:cover}.uploadrow small{display:block;color:var(--muted);margin-top:5px;line-height:1.4}.mini-btn{background:#f0efff;color:#5d50dc;border-radius:10px;padding:9px 12px;font-weight:750;font-size:12px}.socialrow{display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:center;margin-bottom:10px}.socialicon{height:42px;width:42px;border-radius:13px;display:grid;place-items:center;color:white;font-size:14px;font-weight:900}.socialrow input{width:100%;border:1px solid #dfe4ef;border-radius:11px;padding:11px 12px;min-width:0}.fb{background:#1877f2}.ig{background:linear-gradient(135deg,#7c3aed,#e1306c,#f9a825)}.xx{background:#151515}.yt{background:#ff0033}.wa{background:#20b96b}.tt{background:#171717}.tg{background:#229ed9}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{padding:12px 16px;border-radius:12px;font-weight:800;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(100deg,var(--primary),var(--primary2));color:white;box-shadow:0 8px 18px #6558e82b}.secondary{background:#f1f3f9;color:#3b4357}.outline{background:white;border:1px solid #dfe4ef;color:#424b60}.hint{font-size:12px;color:var(--muted);line-height:1.55;margin-top:12px}.privacy-note{background:#f0fbf6;border:1px solid #d3f2e2;color:#315d4a;padding:13px 14px;border-radius:13px;font-size:12px;line-height:1.6;margin-top:16px}.contactline{font-size:12px;color:#5f687d;overflow-wrap:anywhere;margin:0 0 8px}.contactline a{color:#6256d9;text-decoration:none}
+.previewwrap{padding:24px;background:linear-gradient(145deg,#eeecff,#f4f8ff 55%,#e9f7ff);min-height:600px}.previewtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.previewtop h2{font-size:17px;margin:0}.live{font-size:11px;color:#1c9b69;font-weight:850;display:flex;gap:6px;align-items:center}.live:before{content:"";width:7px;height:7px;background:#22c985;border-radius:50%}
+.profilecard{max-width:360px;width:100%;margin:0 auto;background:white;border:1px solid #e8eaf2;border-radius:26px;overflow:hidden;box-shadow:0 22px 50px #38406d17}.cover{height:112px;background:linear-gradient(120deg,#6558e8,#9a5de8 55%,#6ec9ee);position:relative}.cover:before,.cover:after{content:"";position:absolute;border-radius:50%;background:#ffffff20}.cover:before{width:160px;height:160px;right:-22px;top:-70px}.cover:after{width:100px;height:100px;left:35px;bottom:-60px}.profilebody{padding:0 24px 24px;text-align:center}.bigavatar{width:92px;height:92px;border-radius:28px;border:5px solid white;background:linear-gradient(135deg,#e6e0ff,#d9f3ff);margin:-48px auto 12px;position:relative;display:grid;place-items:center;font-size:34px;color:#6558e8;overflow:hidden;box-shadow:0 6px 16px #272d4b12}.bigavatar img{width:100%;height:100%;object-fit:cover}.profilebody h3{font-size:22px;margin:0 0 6px;letter-spacing:-.5px;overflow-wrap:anywhere}.handle{font-size:12px;color:#8278e8;font-weight:750}.bio{font-size:13px;color:#747c8e;line-height:1.5;margin:12px auto 20px;max-width:260px;overflow-wrap:anywhere}.linklist{display:grid;gap:9px}.linkbtn{width:100%;padding:12px 14px;border:1px solid #edf0f6;border-radius:13px;background:#fff;display:flex;align-items:center;gap:11px;text-align:left;color:#273047;text-decoration:none;font-weight:750;font-size:13px;transition:.15s}.linkbtn:hover{transform:translateY(-1px);box-shadow:0 6px 15px #343b5a10;border-color:#dcd9ff}.linkbtn .socialicon{width:34px;height:34px;border-radius:10px;font-size:12px}.linkbtn .arrow{margin-left:auto;color:#9aa1b2;font-size:18px}.accountlabel{display:flex;flex-direction:column;gap:3px;min-width:0}.accountlabel strong{font-size:13px;overflow-wrap:anywhere}.accountlabel small{font-size:10px;color:#8a91a2;font-weight:600}.empty{font-size:12px;color:#9299aa;padding:18px;border:1px dashed #dfe4ef;border-radius:13px}.profilefoot{font-size:10px;color:#a3a8b6;margin-top:22px}.previewactions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px}.previewactions .btn{font-size:12px;padding:10px 12px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d263a;color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px #1114;z-index:20;display:none;max-width:90%;text-align:center}.footer{text-align:center;color:#9097a8;font-size:12px;padding:0 16px 30px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.hero{margin-top:30px}.previewwrap{min-height:auto}.nav{gap:12px}.nav a:not(.signin){display:none}}
+@media(max-width:480px){.topbar{height:62px}.brand{font-size:18px}.hero h1{letter-spacing:-1px}.layout{padding:0 12px;gap:14px}.hero{padding:0 16px}.panelbody{padding:17px}.panelhead{padding:17px}.previewwrap{padding:18px 12px}.two{grid-template-columns:1fr}.profilecard{border-radius:22px}.profilebody{padding-left:18px;padding-right:18px}}
+
+body{isolation:isolate;position:relative;background:linear-gradient(135deg,#f7f8ff 0%,#f1f5ff 48%,#f8f4ff 100%);overflow-x:hidden}
+.ambient-scene{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;perspective:1000px;isolation:isolate}
+.ambient-glow{position:absolute;border-radius:50%;filter:blur(2px);opacity:.72;will-change:transform}
+.glow-one{width:48vw;height:48vw;min-width:300px;min-height:300px;left:-12vw;top:12vh;background:radial-gradient(circle at 35% 35%,#d8d4ff 0%,#e4e7ff 28%,#d7f4ff 58%,transparent 72%);animation:glowDrift 18s ease-in-out infinite alternate}
+.glow-two{width:52vw;height:52vw;min-width:320px;min-height:320px;right:-18vw;bottom:-12vh;background:radial-gradient(circle at 42% 40%,#e9d7ff 0%,#e4e9ff 35%,#d9fbf4 62%,transparent 73%);animation:glowDrift 22s ease-in-out infinite alternate-reverse}
+.orb{position:absolute;border-radius:50%;transform-style:preserve-3d;filter:blur(.1px);will-change:transform}
+.orb-one{width:100px;height:100px;right:11%;top:20%;background:radial-gradient(circle at 28% 24%,#fff 0%,#d9d5ff 9%,#9c8bff 28%,#6858df 58%,#3f35a5 100%);box-shadow:inset -12px -16px 25px #29207555,0 24px 45px #6d5ce52b;animation:floatOne 11s ease-in-out infinite}
+.orb-two{width:58px;height:58px;left:8%;top:60%;background:radial-gradient(circle at 30% 25%,#fff 0%,#d5f9ff 12%,#68d7e9 42%,#268ba9 100%);box-shadow:inset -8px -10px 16px #07516c55,0 18px 30px #269fc42a;animation:floatTwo 13s ease-in-out infinite}
+.orb-three{width:34px;height:34px;right:20%;bottom:16%;background:radial-gradient(circle at 30% 25%,#fff 0%,#ffe4fb 14%,#e9a5f0 45%,#9761d2 100%);box-shadow:inset -5px -7px 10px #653d8955,0 14px 25px #b56ce32b;animation:floatThree 9s ease-in-out infinite}
+.orbit{position:absolute;border:1px solid #9186ee45;border-radius:50%;transform-style:preserve-3d;will-change:transform}
+.orbit span{position:absolute;width:11px;height:11px;border-radius:50%;top:50%;left:-5px;background:linear-gradient(135deg,#fff,#8d7af3);box-shadow:0 0 16px #8b7cf6a6}
+.orbit-one{width:240px;height:78px;right:calc(11% - 70px);top:calc(20% + 10px);transform:rotate(-28deg) rotateX(62deg);animation:orbitSpin 18s linear infinite}
+.orbit-two{width:170px;height:58px;left:calc(8% - 50px);top:calc(60% + 3px);border-color:#53b9d64a;transform:rotate(32deg) rotateX(65deg);animation:orbitSpin 15s linear infinite reverse}
+.orbit-three{width:110px;height:38px;right:calc(20% - 35px);bottom:calc(16% - 2px);border-color:#c38be74a;transform:rotate(-20deg) rotateX(65deg);animation:orbitSpin 12s linear infinite}
+.ambient-dots{position:absolute;inset:0;opacity:.28;background-image:radial-gradient(#8986cb 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(120deg,#000 0%,transparent 68%);animation:dotsSlide 35s linear infinite}
+@keyframes floatOne{0%,100%{transform:translate3d(0,0,20px) rotateY(0) scale(1)}50%{transform:translate3d(-22px,24px,60px) rotateY(28deg) scale(1.06)}}
+@keyframes floatTwo{0%,100%{transform:translate3d(0,0,0) rotateX(0)}50%{transform:translate3d(20px,-28px,35px) rotateX(25deg)}}
+@keyframes floatThree{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-18px,-22px,24px) scale(1.12)}}
+@keyframes orbitSpin{from{rotate:0deg}to{rotate:360deg}}
+@keyframes glowDrift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(3vw,-3vh,0) scale(1.12)}}
+@keyframes dotsSlide{from{background-position:0 0}to{background-position:180px 120px}}
+@media(max-width:700px){.orb-one{width:66px;height:66px;right:5%;top:17%}.orb-two{width:42px;height:42px;left:4%;top:65%}.orb-three{width:26px;height:26px;right:12%;bottom:10%}.orbit-one{width:150px;height:52px;right:calc(5% - 42px);top:calc(17% + 6px)}.orbit-two{width:110px;height:40px;left:calc(4% - 30px);top:calc(65% + 2px)}.orbit-three{width:75px;height:27px;right:calc(12% - 23px);bottom:calc(10% - 1px)}.ambient-dots{background-size:28px 28px;opacity:.18}}
+@media(prefers-reduced-motion:reduce){.ambient-scene *{animation:none!important}}
+
+
+/* Luxurious day/night theme system */
+.theme-toggle{background:#f0efff;color:#5b4de0;border:1px solid #dedaff;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;white-space:nowrap}
+.starfield{position:absolute;inset:0;opacity:0;transition:opacity .8s ease;background-image:radial-gradient(2px 2px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 24% 74%,#fff 98%,transparent),radial-gradient(2px 2px at 77% 22%,#fff 98%,transparent),radial-gradient(1px 1px at 64% 45%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 90% 66%,#fff 98%,transparent),radial-gradient(1px 1px at 44% 32%,#d8dcff 98%,transparent),radial-gradient(2px 2px at 36% 88%,#fff 98%,transparent),radial-gradient(1px 1px at 84% 8%,#fff 98%,transparent);background-size:370px 300px}
+.nebula{position:absolute;border-radius:50%;filter:blur(32px);opacity:0;transition:opacity .8s ease;mix-blend-mode:screen}
+.nebula-one{width:45vw;height:24vw;left:8%;top:18%;background:radial-gradient(ellipse,#5437b8aa 0%,#1648a355 42%,transparent 72%);transform:rotate(-25deg);animation:nebulaFloat 25s ease-in-out infinite alternate}
+.nebula-two{width:40vw;height:30vw;right:4%;bottom:8%;background:radial-gradient(ellipse,#087f9b88 0%,#45288e55 48%,transparent 72%);transform:rotate(25deg);animation:nebulaFloat 28s ease-in-out infinite alternate-reverse}
+.shooting-star{position:absolute;opacity:0;width:120px;height:2px;background:linear-gradient(90deg,transparent,#d8e9ff,#fff);filter:drop-shadow(0 0 6px #9dbdff);transform:rotate(-28deg);border-radius:99px}
+.shooting-one{top:18%;left:12%;animation:shoot 9s linear infinite}
+.shooting-two{top:35%;left:65%;animation:shoot 13s linear infinite 4s}
+@keyframes nebulaFloat{from{transform:translate3d(-1vw,0,0) rotate(-20deg) scale(1)}to{transform:translate3d(2vw,3vh,0) rotate(20deg) scale(1.15)}}
+@keyframes shoot{0%,72%{opacity:0;translate:0 0}74%{opacity:.9}82%{opacity:0;translate:220px 120px}100%{opacity:0;translate:220px 120px}}
+body.dark-theme{color:#edf0ff;background:#070b18}
+body.dark-theme .ambient-scene{background:radial-gradient(ellipse at 50% 0%,#171e42 0%,#090d1c 46%,#050711 100%)}
+body.dark-theme .ambient-glow{opacity:.2;filter:blur(12px)}
+body.dark-theme .glow-one{background:radial-gradient(circle,#442b94 0%,#17285a 38%,transparent 72%)}
+body.dark-theme .glow-two{background:radial-gradient(circle,#075a70 0%,#282052 45%,transparent 72%)}
+body.dark-theme .orb-one{background:radial-gradient(circle at 28% 24%,#f4eaff 0%,#b2a2ff 9%,#6858df 28%,#302b78 65%,#171539 100%);box-shadow:inset -12px -16px 25px #0008,0 24px 45px #6d5ce54a}
+body.dark-theme .orb-two{background:radial-gradient(circle at 30% 25%,#efffff 0%,#85e9ff 12%,#208cae 42%,#0a3c59 100%);box-shadow:inset -8px -10px 16px #0008,0 18px 30px #269fc44a}
+body.dark-theme .orb-three{background:radial-gradient(circle at 30% 25%,#fff0ff 0%,#ffc5fb 14%,#c46ee9 45%,#492c81 100%);box-shadow:inset -5px -7px 10px #0008,0 14px 25px #b56ce34a}
+body.dark-theme .orbit{border-color:#9f9aff66}
+body.dark-theme .orbit-two{border-color:#4bcce966}
+body.dark-theme .orbit-three{border-color:#db9bff66}
+body.dark-theme .ambient-dots{opacity:.08}
+body.dark-theme .starfield,body.dark-theme .nebula{opacity:1}
+body.dark-theme .shooting-star{opacity:0}
+body.dark-theme .topbar{background:#090e20d9;border-color:#242943}
+body.dark-theme .brand{color:#f3f4ff}
+body.dark-theme .nav{color:#bdc5e2}
+body.dark-theme .nav .signin{background:#29234f;color:#d8d0ff}
+body.dark-theme .theme-toggle{background:#171e35;color:#e9e7ff;border-color:#38385f}
+body.dark-theme .hero .eyebrow{background:#151b31;border-color:#33315f;color:#c4baff}
+body.dark-theme .hero p{color:#aab4d2}
+body.dark-theme .panel{background:#10162aee;border-color:#252d49;box-shadow:0 18px 50px #0003}
+body.dark-theme .panelhead{border-color:#28304b}
+body.dark-theme .step{background:#29234f;color:#d4ccff}
+body.dark-theme .sectionlabel{color:#9da8c8}
+body.dark-theme .field label{color:#e1e6fa}
+body.dark-theme .field input,body.dark-theme .field textarea,body.dark-theme .field select,body.dark-theme .socialrow input{background:#0c1223;color:#eef1ff;border-color:#303a59}
+body.dark-theme .field input::placeholder,body.dark-theme .field textarea::placeholder,body.dark-theme .socialrow input::placeholder{color:#6f7b9c}
+body.dark-theme .mini-btn{background:#29234f;color:#d4ccff}
+body.dark-theme .previewwrap{background:linear-gradient(145deg,#111832,#121b33 55%,#102638)}
+body.dark-theme .previewtop h2{color:#edf0ff}
+body.dark-theme .profilecard{background:#121a2e;border-color:#2a3553;box-shadow:0 22px 50px #0005}
+body.dark-theme .profilebody h3{color:#f4f5ff}
+body.dark-theme .bio{color:#aab4cc}
+body.dark-theme .linkbtn{background:#172139;border-color:#2b3654;color:#edf0ff}
+body.dark-theme .linkbtn:hover{border-color:#7569dd}
+body.dark-theme .linkbtn .arrow{color:#9aa8cb}
+body.dark-theme .empty{color:#9da8c8;border-color:#39425e}
+body.dark-theme .profilefoot,body.dark-theme .footer{color:#7f8aa9}
+body.dark-theme .secondary{background:#202a43;color:#e2e7fa}
+body.dark-theme .outline{background:#121a2e;border-color:#34405f;color:#e0e6fb}
+body.dark-theme .hint{color:#9da8c8}
+body.dark-theme .uploadrow small{color:#9da8c8}
+@media(max-width:700px){.nav{gap:7px}.theme-toggle{padding:8px 9px;font-size:11px}}
+
+</style>
+</head>
+<body>
+<div class="ambient-scene" aria-hidden="true">
+  <div class="starfield"></div>
+  <div class="nebula nebula-one"></div><div class="nebula nebula-two"></div>
+  <div class="shooting-star shooting-one"></div><div class="shooting-star shooting-two"></div>
+  <div class="ambient-glow glow-one"></div>
+  <div class="ambient-glow glow-two"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <div class="orb orb-three"></div>
+  <div class="orbit orbit-one"><span></span></div>
+  <div class="orbit orbit-two"><span></span></div>
+  <div class="orbit orbit-three"><span></span></div>
+  <div class="ambient-dots"></div>
+</div>
+
+<header class="topbar">
+  <div class="brand"><span class="brandmark">↗</span>LinkNest<span style="color:#8b83a8;font-size:11px;font-weight:700">BETA</span></div>
+  <nav class="nav"><a href="#creator">Create My Card</a><a href="#preview">Live Preview</a><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">☾ Dark mode</button><a href="#creator" class="signin">Start Creating</a></nav>
+</header>
+<section class="hero">
+  <span class="eyebrow">✦ YOUR SOCIAL WORLD, CONNECTED</span>
+  <h1>All your socials.<br><span class="gradient">One beautiful link.</span></h1>
+  <p>Bring your online world together. Add your social profiles, customize your look, and share one simple page with everyone.</p>
+</section>
+<main class="layout">
+  <section class="panel" id="creator">
+    <div class="panelhead"><h2>Build your link page</h2><span class="step">STEP 1 OF 2</span></div>
+    <div class="panelbody">
+      <p class="sectionlabel">Choose your card type</p>
+      <div class="field"><label for="cardType">What would you like to create?</label><select id="cardType"><option value="social">Social Media Card</option><option value="business">Business Card</option><option value="personal">Personal Contact Card</option><option value="creator">Creator / Portfolio Card</option></select></div>
+      <p class="sectionlabel">Profile details</p>
+      <div class="uploadrow">
+        <div class="avatar" id="smallAvatar">☺</div>
+        <div><button class="mini-btn" type="button" onclick="document.getElementById('photo').click()">＋ Upload profile photo</button><input id="photo" type="file" accept="image/*" hidden><small>Use a square photo for the best result.</small></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="name">Display name</label><input id="name" maxlength="70" placeholder="Enter your name" autocomplete="name"></div>
+        <div class="field"><label for="handle">Username (optional)</label><input id="handle" maxlength="40" placeholder="Enter a username (optional)" autocomplete="nickname"></div>
+      </div>
+      <div class="field"><label for="bio">Short bio</label><textarea id="bio" maxlength="180" placeholder="Write a short bio (optional)"></textarea></div>
+      <div id="businessFields" hidden>
+        <div class="two">
+          <div class="field"><label for="company">Business / company name</label><input id="company" maxlength="80" placeholder="Your business name"></div>
+          <div class="field"><label for="role">Job title / role</label><input id="role" maxlength="80" placeholder="e.g. Founder, Designer"></div>
+        </div>
+      </div>
+      <p class="sectionlabel" style="margin-top:20px">Contact details (optional)</p>
+      <div class="two">
+        <div class="field"><label for="phone">Phone number</label><input id="phone" type="tel" maxlength="30" placeholder="Your phone number" autocomplete="tel"></div>
+        <div class="field"><label for="email">Email / Gmail</label><input id="email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email"></div>
+      </div>
+      <div class="field"><label for="website">Website (optional)</label><input id="website" type="url" placeholder="https://yourwebsite.com"></div>
+      <p class="sectionlabel" style="margin-top:25px">Social accounts (optional)</p><p class="hint">Paste a public profile URL. The card will show the account name instead of displaying the full URL. Clicking the account name opens that profile.</p>
+      <div class="socialrow"><span class="socialicon fb">f</span><input id="facebook" type="url" placeholder="https://facebook.com/yourname"></div>
+      <div class="socialrow"><span class="socialicon ig">◎</span><input id="instagram" type="url" placeholder="https://instagram.com/yourname"></div>
+      <div class="socialrow"><span class="socialicon xx">𝕏</span><input id="twitter" type="url" placeholder="https://x.com/yourname"></div>
+      <div class="socialrow"><span class="socialicon yt">▶</span><input id="youtube" type="url" placeholder="https://youtube.com/@yourname"></div>
+      <div class="socialrow"><span class="socialicon wa">◔</span><input id="whatsapp" type="url" placeholder="https://wa.me/8801XXXXXXXXX"></div>
+      <div class="socialrow"><span class="socialicon tt">♪</span><input id="tiktok" type="url" placeholder="https://tiktok.com/@yourname"></div>
+      <div class="socialrow"><span class="socialicon tg">➤</span><input id="telegram" type="url" placeholder="https://t.me/yourname"></div>
+      <p class="hint">Tip: Add only the public links you want people to visit. You never need to enter a social-media password, verification code, or banking details.</p>
+      <div class="privacy-note"><strong>🔒 Privacy & safety</strong><br>This demo does not ask for account passwords or sign in to social accounts. Your information stays in this browser on this device. Phone and email are optional—only add them if you want them shown on your card. Do not add private or sensitive information.</div>
+      <p class="sectionlabel" style="margin-top:25px">Customize your style</p>
+      <div class="field"><label>Cover background picture (optional)</label><button class="mini-btn" type="button" onclick="document.getElementById('coverPhoto').click()">＋ Upload cover picture</button><input id="coverPhoto" type="file" accept="image/*" hidden><button class="mini-btn" id="removeCover" type="button" style="margin-left:6px">Remove picture</button><small style="display:block;color:var(--muted);margin-top:7px">Choose your own background image for the top of your profile card.</small></div>
+      <div class="two">
+        <div class="field"><label for="theme">Card theme</label><select id="theme"><option value="purple">Purple dream</option><option value="ocean">Ocean blue</option><option value="sunset">Sunset glow</option><option value="midnight">Midnight</option></select></div>
+        <div class="field"><label for="layoutStyle">Button style</label><select id="layoutStyle"><option value="rounded">Rounded</option><option value="soft">Soft corners</option><option value="pill">Pill buttons</option></select></div>
+      </div>
+      <div class="actions"><button class="btn primary" id="saveBtn">✓ Save on this device</button><button class="btn secondary" id="clearBtn">Reset demo</button></div>
+      <p class="hint">🔒 Privacy-first demo: never enter your social-media password, verification code, or recovery code here. This tool only uses public profile links and saves details in this browser on this device. It does not log in to your social accounts or send your details to a server.</p>
+    </div>
+  </section>
+  <section class="panel" id="preview">
+    <div class="previewwrap">
+      <div class="previewtop"><h2>Live preview</h2><span class="live">UPDATING LIVE</span></div>
+      <div class="profilecard" id="profileCard">
+        <div class="cover" id="cover"></div>
+        <div class="profilebody">
+          <div class="bigavatar" id="bigAvatar">☺</div>
+          <h3 id="outName">Your Name</h3><div class="handle" id="outHandle">@yourname</div>
+          <p class="bio" id="outBio">Your short bio will appear here.</p><div id="contactList"></div>
+          <div class="linklist" id="linkList"><div class="empty">Your social links will appear here as you add them.</div></div>
+          <div class="profilefoot">MADE WITH LINKNEST ✦</div>
+        </div>
+      </div>
+      <div class="previewactions">
+        <button class="btn primary" id="shareBtn">↗ Share card</button>
+        <button class="btn secondary" id="downloadBtn">↓ Download card</button>
+        <button class="btn outline" id="copyBtn">▣ Copy page text</button>
+      </div>
+      <p class="hint" style="text-align:center;max-width:360px;margin:14px auto 0">Preview your page as you build it. Link buttons open the public URLs you enter.</p>
+    </div>
+  </section>
+</main>
+<div class="footer">LinkNest demo · A concept prototype, not yet a live .com website.</div>
+<div class="toast" id="toast"></div>
+<script>
+const ids=['cardType','name','handle','bio','company','role','phone','email','website','facebook','instagram','twitter','youtube','whatsapp','tiktok','telegram','theme','layoutStyle'];
+const socials=[
+ ['facebook','Facebook','f','fb'],['instagram','Instagram','◎','ig'],['twitter','X / Twitter','𝕏','xx'],['youtube','YouTube','▶','yt'],['whatsapp','WhatsApp','◔','wa'],['tiktok','TikTok','♪','tt'],['telegram','Telegram','➤','tg']
+];
+let photoData='';
+let coverData='';
+const themes={purple:['#6558e8','#a65de8','#72c8ef'],ocean:['#087ea4','#23a6d5','#73dfd0'],sunset:['#f97316','#ec4899','#fbbf24'],midnight:['#111827','#3730a3','#6d28d9']};
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2800)}
+function safeUrl(raw){let s=(raw||'').trim();if(!s)return '';if(!/^https?:\/\//i.test(s))s='https://'+s;try{const u=new URL(s);if(!['http:','https:'].includes(u.protocol))return '';return u.href}catch(e){return ''}}
+function extractAccount(raw, platform){
+ const url=safeUrl(raw); if(!url) return {url:'',account:''};
+ try {
+  const u=new URL(url); const parts=u.pathname.split('/').filter(Boolean);
+  let candidate='';
+  if(platform==='facebook') candidate=parts[0]||'';
+  else if(platform==='instagram'||platform==='twitter'||platform==='tiktok'||platform==='telegram') candidate=parts[0]||'';
+  else if(platform==='youtube') candidate=parts.find(x=>x.startsWith('@'))||parts[0]||'';
+  else if(platform==='whatsapp') candidate=u.pathname.replace(/\//g,'');
+  candidate=decodeURIComponent(candidate).replace(/^@/,'').replace(/[?#].*$/,'');
+  if(['profile.php','people','watch','share','intent','home.php'].includes(candidate.toLowerCase())) candidate='';
+  let account=candidate ? (platform==='whatsapp' ? candidate : '@'+candidate) : platformName(platform);
+  if(platform==='youtube' && candidate && !candidate.startsWith('@')) account=candidate;
+  return {url,account};
+ } catch(e){return {url:'',account:''}}
+}
+function platformName(id){const item=socials.find(x=>x[0]===id);return item?item[1]:'Profile'}
+function update(){
+ $('outName').textContent=$('name').value.trim()||'Your Name';
+ $('outHandle').textContent=$('handle').value.trim();
+ $('outBio').textContent=$('bio').value.trim()||'Your short bio will appear here.';
+ $('businessFields').hidden=$('cardType').value!=='business';
+ const type=$('cardType').value;
+ const company=$('company').value.trim(), role=$('role').value.trim();
+ if(type==='business' && (company||role)) $('outHandle').textContent=[role,company].filter(Boolean).join(' · ');
+ $('contactList').innerHTML='';
+ const phone=$('phone').value.trim(), email=$('email').value.trim(), website=safeUrl($('website').value);
+ if(phone){const d=document.createElement('div');d.className='contactline';const a=document.createElement('a');a.href='tel:'+phone.replace(/[^+0-9]/g,'');a.textContent='☎ '+phone;d.appendChild(a);$('contactList').appendChild(d)}
+ if(email){const d=document.createElement('div');d.className='contactline';const a=document.createElement('a');a.href='mailto:'+email;a.textContent='✉ '+email;d.appendChild(a);$('contactList').appendChild(d)}
+ if(website){const d=document.createElement('div');d.className='contactline';const a=document.createElement('a');a.href=website;a.target='_blank';a.rel='noopener noreferrer';a.textContent='↗ Website';d.appendChild(a);$('contactList').appendChild(d)}
+ const av=photoData?'<img src="'+photoData+'" alt="Profile photo">':'☺';
+ $('smallAvatar').innerHTML=av;$('bigAvatar').innerHTML=av;
+ const c=themes[$('theme').value]||themes.purple;
+ $('cover').style.background=coverData?`linear-gradient(#17203322,#17203322),url("${coverData}") center/cover no-repeat`:`linear-gradient(120deg,${c[0]},${c[1]} 55%,${c[2]})`;
+ $('linkList').innerHTML=''; let count=0;
+ socials.forEach(([id,label,sym,cls])=>{
+  const data=extractAccount($(id).value,id); if(!data.url)return; count++;
+  const a=document.createElement('a');a.className='linkbtn';a.href=data.url;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label','Open '+label+' profile');
+  if($('layoutStyle').value==='pill')a.style.borderRadius='999px';
+  if($('layoutStyle').value==='soft')a.style.borderRadius='7px';
+  const icon=document.createElement('span');icon.className='socialicon '+cls;icon.textContent=sym;
+  const labelbox=document.createElement('span');labelbox.className='accountlabel';
+  const account=document.createElement('strong');account.textContent=data.account;
+  const platform=document.createElement('small');platform.textContent=label;
+  labelbox.append(account,platform);
+  const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='↗';
+  a.append(icon,labelbox,arrow);$('linkList').appendChild(a);
+ });
+ if(!count)$('linkList').innerHTML='<div class="empty">Your social accounts will appear here as you add them.</div>';
+}
+ids.forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update);el.addEventListener('change',update)}});
+$('cardType').addEventListener('change',update);
+$('photo').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('Please choose an image file.');return}if(f.size>2*1024*1024){toast('Choose an image smaller than 2 MB.');return}const r=new FileReader();r.onload=()=>{photoData=r.result;update()};r.readAsDataURL(f)});
+$('coverPhoto').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('Please choose an image file.');return}if(f.size>2*1024*1024){toast('Choose a cover image smaller than 2 MB.');return}const r=new FileReader();r.onload=()=>{coverData=r.result;update()};r.readAsDataURL(f)});
+$('removeCover').addEventListener('click',()=>{coverData='';$('coverPhoto').value='';update();toast('Cover picture removed.')});
+$('saveBtn').addEventListener('click',()=>{try{const data={};ids.forEach(id=>data[id]=$(id).value);data.photoData=photoData;data.coverData=coverData;localStorage.setItem('linknest-demo',JSON.stringify(data));toast('Saved on this device.')}catch(e){toast('Could not save. Try a smaller photo.')}});
+function loadSaved(){try{const d=JSON.parse(localStorage.getItem('linknest-demo')||'null');if(!d)return;ids.forEach(id=>{if(d[id]!==undefined)$(id).value=d[id]});photoData=d.photoData||'';coverData=d.coverData||''}catch(e){}update()}
+$('clearBtn').addEventListener('click',()=>{if(!confirm('Reset the demo and clear saved details on this device?'))return;localStorage.removeItem('linknest-demo');location.reload()});
+
+function escapeSvg(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function buildCardSvg(){
+ const name=($('name').value||'My Social Links');
+ const bio=($('bio').value||'');
+ const links=socials.map(([id,label,sym,cls])=>{const u=safeUrl($(id).value);return u?{label,url:u,sym,cls}:null}).filter(Boolean);
+ const c=themes[$('theme').value]||themes.purple;
+ const photo=photoData?`<image href="${photoData}" x="260" y="105" width="120" height="120" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip)"/>`:`<text x="320" y="178" text-anchor="middle" font-size="52" fill="${c[0]}" font-family="Arial">☺</text>`;
+ let y=340;
+ const items=links.map(l=>{const color=l.cls==='fb'?'#1877f2':l.cls==='yt'?'#ff0033':l.cls==='wa'?'#20b96b':l.cls==='tg'?'#229ed9':l.cls==='ig'?'#c13584':l.cls==='tt'?'#171717':'#333';const s=`<rect x="100" y="${y}" width="440" height="58" rx="16" fill="#fff" stroke="#e7eaf2"/><circle cx="132" cy="${y+29}" r="17" fill="${color}"/><text x="132" y="${y+35}" text-anchor="middle" font-size="16" fill="#fff" font-family="Arial" font-weight="bold">${escapeSvg(l.sym)}</text><text x="165" y="${y+35}" font-size="17" fill="#273047" font-family="Arial" font-weight="bold">${escapeSvg(l.label)}</text><text x="515" y="${y+35}" text-anchor="end" font-size="19" fill="#9aa1b2" font-family="Arial">↗</text>`;y+=70;return s}).join('');
+ const height=Math.max(650,y+100);
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="${height}" viewBox="0 0 640 ${height}"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c[0]}"/><stop offset=".58" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient><clipPath id="clip"><rect x="260" y="105" width="120" height="120" rx="36"/></clipPath></defs><rect width="640" height="${height}" rx="34" fill="#f3f5fb"/><rect x="36" y="28" width="568" height="${height-56}" rx="30" fill="#fff"/><path d="M66 58 Q320 10 574 58 L574 155 L66 155Z" fill="url(#bg)"/><rect x="260" y="105" width="120" height="120" rx="36" fill="#e9e4ff" stroke="#fff" stroke-width="8"/>${photo}<text x="320" y="265" text-anchor="middle" font-size="30" font-family="Arial" font-weight="bold" fill="#172033">${escapeSvg(name)}</text><text x="320" y="292" text-anchor="middle" font-size="15" font-family="Arial" fill="${c[0]}">${escapeSvg($('handle').value||'')}</text><text x="320" y="318" text-anchor="middle" font-size="14" font-family="Arial" fill="#747c8e">${escapeSvg(bio.slice(0,65))}</text>${items}<text x="320" y="${height-52}" text-anchor="middle" font-size="12" letter-spacing="2" font-family="Arial" fill="#9aa1b2">MADE WITH LINKNEST</text></svg>`;
+}
+async function cardBlob(type='image/png'){
+ const svgBlob=new Blob([buildCardSvg()],{type:'image/svg+xml;charset=utf-8'});
+ const objectUrl=URL.createObjectURL(svgBlob);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=objectUrl;});
+  const scale=2, canvas=document.createElement('canvas');
+  canvas.width=640*scale;canvas.height=img.height*scale;
+  const ctx=canvas.getContext('2d');ctx.scale(scale,scale);ctx.drawImage(img,0,0);
+  return await new Promise(resolve=>canvas.toBlob(resolve,type,0.95));
+ } finally {URL.revokeObjectURL(objectUrl);}
+}
+function shareText(){
+ const links=socials.map(([id,label])=>{const u=safeUrl($(id).value);return u?label+': '+u:null}).filter(Boolean);
+ return [ $('name').value||'My social links', $('bio').value, ...links].filter(Boolean).join('\n');
+}
+$('shareBtn').addEventListener('click',async()=>{
+ const button=$('shareBtn');button.disabled=true;button.textContent='Preparing card…';
+ try{
+  const blob=await cardBlob();
+  const file=new File([blob],'linknest-card.png',{type:'image/png'});
+  const text=shareText();
+  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+   await navigator.share({title:($('name').value||'My')+' — LinkNest card',text,files:[file]});
+  }else{
+   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='linknest-card.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+   try{await navigator.clipboard.writeText(text);toast('Card image downloaded. Social URLs copied too—share the image and paste the links in your post/caption.');}
+   catch(e){toast('Card image downloaded. Share it to your Story or feed; copy profile URLs separately if needed.');}
+  }
+ }catch(e){if(e.name!=='AbortError')toast('Could not share directly. Use Download card, then upload the image to your Story or feed.');}
+ finally{button.disabled=false;button.innerHTML='↗ Share card';}
+});
+$('copyBtn').addEventListener('click',async()=>{const lines=shareText();try{await navigator.clipboard.writeText(lines);toast('Profile details and links copied.')}catch(e){prompt('Copy your profile details:',lines)}});
+$('downloadBtn').addEventListener('click',async()=>{
+ try{
+  const blob=await cardBlob();
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='linknest-card.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast('Card image downloaded as PNG. The image itself cannot contain clickable links; use the profile page for clickable buttons.');
+ }catch(e){toast('Could not create PNG. Try again or use a modern browser.');}
+});
+
+const themeToggle=$('themeToggle');
+function setTheme(mode){
+ const dark=mode==='dark';
+ document.body.classList.toggle('dark-theme',dark);
+ if(themeToggle){themeToggle.textContent=dark?'☀ Light mode':'☾ Dark mode';themeToggle.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');}
+ try{localStorage.setItem('linknest-theme',mode)}catch(e){}
+}
+if(themeToggle){
+ themeToggle.addEventListener('click',()=>setTheme(document.body.classList.contains('dark-theme')?'light':'dark'));
+ let initial='light';
+ try{initial=localStorage.getItem('linknest-theme')|| (window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}
+ setTheme(initial);
+}
+
+loadSaved();
+// Keep the preview clean until the user enters their own details; placeholders disappear while typing.
+
+</script>
+</body>
+</html>
